@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &855313761223725256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3706915093786618032}
+  - component: {fileID: 4105767162930553112}
+  - component: {fileID: 6952289719042873016}
+  m_Layer: 0
+  m_Name: GasSensorTip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3706915093786618032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855313761223725256}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.599, y: 0.017, z: 0.009}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1860992751734790736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4105767162930553112
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855313761223725256}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6952289719042873016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855313761223725256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa313adc44217e4b868627cc69ded38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainController: {fileID: 5462049036123325271}
 --- !u!1 &3508494383890373506
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +80,7 @@ GameObject:
   - component: {fileID: 1820871499763715632}
   - component: {fileID: 4953385816872561073}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Display (Canvas)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,6 +282,7 @@ Transform:
   - {fileID: 6538229510411226838}
   - {fileID: 631182253043290431}
   - {fileID: 4264414516350959739}
+  - {fileID: 3706915093786618032}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -180, y: 75, z: 90}
 --- !u!54 &1457248660383752205
@@ -265,8 +333,6 @@ MonoBehaviour:
   colorOk: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   colorAlert: {r: 1, g: 0, b: 0, a: 1}
   alertSound: {fileID: 0}
-  gasZoneTag: GasLeakZone
-  grabInteractable: {fileID: 745566744040225281}
 --- !u!114 &745566744040225281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,7 +508,7 @@ Transform:
   m_GameObject: {fileID: 8409625736503600845}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0, y: 0.04, z: 0.0401}
+  m_LocalPosition: {x: -0.0112, y: 0.0616, z: 0.0506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

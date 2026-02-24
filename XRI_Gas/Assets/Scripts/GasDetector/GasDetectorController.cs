@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI; // Обязательно для работы с UI Image
+using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -7,9 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class GasDetectorController : MonoBehaviour
 {
     [Header("Ссылки на UI")]
-    [Tooltip("Перетащите сюда объект Background из Canvas")]
     public Image backgroundImage;
-    [Tooltip("Перетащите сюда объект Icon из Canvas")]
     public Image iconImage;
 
     [Header("Спрайты (Иконки)")]
@@ -22,16 +20,17 @@ public class GasDetectorController : MonoBehaviour
     public Color colorOk = Color.gray;
     public Color colorAlert = Color.red;
 
-    [Header("Звук и Настройки")]
-    [Tooltip("Звук писка при обнаружении газа")]
+    [Header("Звук")]
     public AudioSource alertSound;
-    [Tooltip("Тег зоны, где происходит утечка")]
-    public string gasZoneTag = "GasLeakZone";
 
-    [SerializeField] private XRGrabInteractable grabInteractable;
+    private XRGrabInteractable grabInteractable;
     private bool isGrabbed = false;
     private bool isNearGas = false;
 
+    private void Awake()
+    {
+        grabInteractable = GetComponent<XRGrabInteractable>();
+    }
 
     private void OnEnable()
     {
@@ -62,22 +61,12 @@ public class GasDetectorController : MonoBehaviour
         UpdateScreen();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void SetGasDetected(bool hasGas)
     {
-        if (other.CompareTag(gasZoneTag))
-        {
-            isNearGas = true;
-            UpdateScreen();
-        }
-    }
+        if (isNearGas == hasGas) return;
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(gasZoneTag))
-        {
-            isNearGas = false;
-            UpdateScreen();
-        }
+        isNearGas = hasGas;
+        UpdateScreen();
     }
 
     private void UpdateScreen()
@@ -86,7 +75,6 @@ public class GasDetectorController : MonoBehaviour
         {
             backgroundImage.color = colorWaiting;
             if (waitingSprite != null) iconImage.sprite = waitingSprite;
-
             if (alertSound != null) alertSound.Stop();
         }
         else
@@ -95,14 +83,12 @@ public class GasDetectorController : MonoBehaviour
             {
                 backgroundImage.color = colorAlert;
                 if (alertSprite != null) iconImage.sprite = alertSprite;
-
                 if (alertSound != null && !alertSound.isPlaying) alertSound.Play();
             }
             else
             {
                 backgroundImage.color = colorOk;
                 if (okSprite != null) iconImage.sprite = okSprite;
-
                 if (alertSound != null) alertSound.Stop();
             }
         }
