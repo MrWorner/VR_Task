@@ -333,6 +333,7 @@ MonoBehaviour:
   colorOk: {r: 0, g: 1, b: 0.47852516, a: 1}
   colorAlert: {r: 1, g: 0, b: 0, a: 1}
   alertSound: {fileID: 0}
+  grabInteractable: {fileID: 745566744040225281}
 --- !u!114 &745566744040225281
 MonoBehaviour:
   m_ObjectHideFlags: 0

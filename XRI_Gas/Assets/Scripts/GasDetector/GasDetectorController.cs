@@ -23,14 +23,9 @@ public class GasDetectorController : MonoBehaviour
     [Header("Звук")]
     public AudioSource alertSound;
 
-    private XRGrabInteractable grabInteractable;
+    [SerializeField] private XRGrabInteractable grabInteractable;
     private bool isGrabbed = false;
     private bool isNearGas = false;
-
-    private void Awake()
-    {
-        grabInteractable = GetComponent<XRGrabInteractable>();
-    }
 
     private void OnEnable()
     {
