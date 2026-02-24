@@ -12,6 +12,10 @@ public class StickController : MonoBehaviour
     public float ignitionThreshold = 0.5f;
     public string matchboxTag = "Matchbox";
 
+    [Header("Звук")]
+    [Tooltip("Перетащите сюда AudioSource со звуком зажигания")]
+    public AudioSource ignitionSound;
+
     [SerializeField] private XRGrabInteractable grabInteractable;
     private Vector3 lastPosition;
     private Vector3 currentVelocity;
@@ -51,6 +55,11 @@ public class StickController : MonoBehaviour
     {
         isLit = true;
         if (flameVisuals != null) flameVisuals.SetActive(true);
+       
+        if (ignitionSound != null)
+        {
+            ignitionSound.Play();
+        }
 
         SendHaptic(0.7f, 0.15f);
     }
