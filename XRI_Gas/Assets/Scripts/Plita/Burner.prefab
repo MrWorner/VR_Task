@@ -103,14 +103,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stoveKnob: {fileID: 0}
   flameVisuals: {fileID: 7668225637525466704}
-  gasHissSound: {fileID: 403358635775254455}
-  fireSound: {fileID: 0}
-  isDefective: 0
   defectiveFlameVisuals: {fileID: 1313449529797186708}
-  defectiveFireSound: {fileID: 0}
+  gasHissClip: {fileID: 8300000, guid: 2b782bdcfd96c4a459a1a934d313bdee, type: 3}
+  ignitionOneShotClip: {fileID: 8300000, guid: 6dcf6018cdc4d1842bf64f040fa7af07, type: 3}
+  defectiveFireClip: {fileID: 8300000, guid: e653cb934c6a7a14fadbcd12b0dc60a3, type: 3}
+  isDefective: 0
+  fireTag: StickFlame
   isGasFlowing: 0
   isLit: 0
-  fireTag: StickFlame
+  audioSource: {fileID: 403358635775254455}
 --- !u!135 &3185687232976069852
 SphereCollider:
   m_ObjectHideFlags: 0
