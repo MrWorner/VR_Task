@@ -4,6 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(AudioSource))]
 public class GasDetectorController : MonoBehaviour
 {
     [Header("Ссылки на UI")]
@@ -20,12 +21,27 @@ public class GasDetectorController : MonoBehaviour
     public Color colorOk = Color.gray;
     public Color colorAlert = Color.red;
 
-    [Header("Звук")]
-    public AudioSource alertSound;
+    [Header("Аудио Клипы")]
+    [Tooltip("Звук сирены при обнаружении газа (зациклен)")]
+    public AudioClip alertClip;
+    [Tooltip("Короткий Beep при взятии в руку")]
+    public AudioClip grabClip;
+    [Tooltip("Милый писк при выбрасывании предмета")]
+    public AudioClip dropClip;
 
-    [SerializeField] private XRGrabInteractable grabInteractable;
+    private XRGrabInteractable grabInteractable;
+    private AudioSource audioSource;
     private bool isGrabbed = false;
     private bool isNearGas = false;
+
+    private void Awake()
+    {
+        grabInteractable = GetComponent<XRGrabInteractable>();
+        audioSource = GetComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f; 
+    }
 
     private void OnEnable()
     {
@@ -47,12 +63,24 @@ public class GasDetectorController : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         isGrabbed = true;
+
+        if (grabClip != null)
+        {
+            audioSource.PlayOneShot(grabClip);
+        }
+
         UpdateScreen();
     }
 
     private void OnDropped(SelectExitEventArgs args)
     {
         isGrabbed = false;
+
+        if (dropClip != null)
+        {
+            audioSource.PlayOneShot(dropClip);
+        }
+
         UpdateScreen();
     }
 
@@ -60,12 +88,13 @@ public class GasDetectorController : MonoBehaviour
     {
         if (isNearGas == hasGas) return;
 
+        isNearGas = hasGas;
+
         if (isNearGas)
         {
-            GameManager.Instance.ReportLeakFound(); 
+            if (GameManager.Instance != null) GameManager.Instance.ReportLeakFound();
         }
 
-        isNearGas = hasGas;
         UpdateScreen();
     }
 
@@ -75,7 +104,6 @@ public class GasDetectorController : MonoBehaviour
         {
             backgroundImage.color = colorWaiting;
             if (waitingSprite != null) iconImage.sprite = waitingSprite;
-            if (alertSound != null) alertSound.Stop();
         }
         else
         {
@@ -83,13 +111,35 @@ public class GasDetectorController : MonoBehaviour
             {
                 backgroundImage.color = colorAlert;
                 if (alertSprite != null) iconImage.sprite = alertSprite;
-                if (alertSound != null && !alertSound.isPlaying) alertSound.Play();
             }
             else
             {
                 backgroundImage.color = colorOk;
                 if (okSprite != null) iconImage.sprite = okSprite;
-                if (alertSound != null) alertSound.Stop();
+            }
+        }
+
+        HandleAlertSound();
+    }
+
+    private void HandleAlertSound()
+    {
+        bool shouldAlarm = isGrabbed && isNearGas;
+
+        if (shouldAlarm)
+        {
+            if (audioSource.clip != alertClip || !audioSource.isPlaying)
+            {
+                audioSource.clip = alertClip;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            if (audioSource.clip == alertClip)
+            {
+                audioSource.Stop();
             }
         }
     }

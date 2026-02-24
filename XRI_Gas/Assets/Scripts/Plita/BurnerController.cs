@@ -108,6 +108,7 @@ public class BurnerController : MonoBehaviour
         else
         {
             if (flameVisuals != null) flameVisuals.SetActive(true);
+            audioSource.Stop();
             audioSource.PlayOneShot(ignitionOneShotClip);
             Debug.Log("Конфорка зажглась нормально.");
         }
