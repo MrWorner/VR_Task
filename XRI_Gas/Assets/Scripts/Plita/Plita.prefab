@@ -114,9 +114,9 @@ Transform:
   m_Children:
   - {fileID: 3589863394941602447}
   - {fileID: 9098218949574793083}
-  - {fileID: 3497358447672379324}
-  - {fileID: 6824854008547056858}
   - {fileID: 7746417012159260863}
+  - {fileID: 6824854008547056858}
+  - {fileID: 3497358447672379324}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &510316732701600859
@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 7618928375419322059}
   - component: {fileID: 2298027845552790872}
   - component: {fileID: 4314629849438630116}
+  - component: {fileID: 1963189574795346760}
   m_Layer: 0
   m_Name: plita:SM_plita
   m_TagString: Untagged
@@ -206,6 +207,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1963189574795346760
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510316732701600859}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.599947, y: 0.75998664, z: 0.632969}
+  m_Center: {x: -0.0000050216927, y: 0.0000067949295, z: 0.0014843348}
 --- !u!1 &1513224907965302630
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +654,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3589863394941602447}
   m_Layer: 0
-  m_Name: VisualBody
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1676,10 +1698,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6019918617569424150}
     m_Modifications:
+    - target: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+        type: 3}
+      propertyPath: stoveKnob
+      value: 
+      objectReference: {fileID: 2630938016377977670}
     - target: {fileID: 4502387595190079946, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
       propertyPath: m_Name
-      value: Flame Blue (2)
+      value: Burner
       objectReference: {fileID: 0}
     - target: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
@@ -1736,6 +1763,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28131931c5e032143adf76fbebe9bcc9, type: 3}
+--- !u!114 &2343352727057163194 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+    type: 3}
+  m_PrefabInstance: {fileID: 344705990683725859}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e442ada22cf20e54a84a2a686cd8f79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6824854008547056858 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
@@ -1750,6 +1789,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3589863394941602447}
     m_Modifications:
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 31770947817334811}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetGasState
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BurnerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1810,6 +1884,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1669abea14a9684498c272df128699bb, type: 3}
+--- !u!114 &4446241595966686714 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1120620858317890486}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbafd206ac69364590536f07e969fd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5680986333926684134 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
@@ -1824,6 +1910,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3589863394941602447}
     m_Modifications:
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2343352727057163194}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetGasState
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BurnerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1884,6 +2005,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1669abea14a9684498c272df128699bb, type: 3}
+--- !u!114 &2630938016377977670 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1638184058951359754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbafd206ac69364590536f07e969fd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6332109436657781594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
@@ -1898,10 +2031,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6019918617569424150}
     m_Modifications:
+    - target: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+        type: 3}
+      propertyPath: stoveKnob
+      value: 
+      objectReference: {fileID: 4446241595966686714}
     - target: {fileID: 4502387595190079946, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
       propertyPath: m_Name
-      value: Flame Blue
+      value: Burner
       objectReference: {fileID: 0}
     - target: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
@@ -1968,6 +2106,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28131931c5e032143adf76fbebe9bcc9, type: 3}
+--- !u!114 &31770947817334811 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2611306186462206850}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e442ada22cf20e54a84a2a686cd8f79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9098218949574793083 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
@@ -1982,10 +2132,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6019918617569424150}
     m_Modifications:
+    - target: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+        type: 3}
+      propertyPath: stoveKnob
+      value: 
+      objectReference: {fileID: 7482049783392246189}
     - target: {fileID: 4502387595190079946, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
       propertyPath: m_Name
-      value: Flame Blue (3)
+      value: Burner
       objectReference: {fileID: 0}
     - target: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
@@ -2042,6 +2197,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28131931c5e032143adf76fbebe9bcc9, type: 3}
+--- !u!114 &1563680730360174559 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+    type: 3}
+  m_PrefabInstance: {fileID: 3602503604398040134}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e442ada22cf20e54a84a2a686cd8f79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7746417012159260863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
@@ -2056,6 +2223,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3589863394941602447}
     m_Modifications:
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1563680730360174559}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetGasState
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BurnerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2122,6 +2324,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6191485447599128545}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7482049783392246189 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 6191485447599128545}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbafd206ac69364590536f07e969fd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7707761436906703685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2130,10 +2344,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6019918617569424150}
     m_Modifications:
+    - target: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+        type: 3}
+      propertyPath: stoveKnob
+      value: 
+      objectReference: {fileID: 6736698138469486310}
     - target: {fileID: 4502387595190079946, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
       propertyPath: m_Name
-      value: Flame Blue (1)
+      value: Burner
       objectReference: {fileID: 0}
     - target: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
@@ -2196,6 +2415,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7707761436906703685}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5673021049542752476 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+    type: 3}
+  m_PrefabInstance: {fileID: 7707761436906703685}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e442ada22cf20e54a84a2a686cd8f79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8017683683765201066
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2204,6 +2435,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3589863394941602447}
     m_Modifications:
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5673021049542752476}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetGasState
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BurnerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+        type: 3}
+      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2270,3 +2536,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8017683683765201066}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6736698138469486310 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8017683683765201066}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbafd206ac69364590536f07e969fd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
