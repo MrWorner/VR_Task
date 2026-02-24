@@ -1789,41 +1789,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3589863394941602447}
     m_Modifications:
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 31770947817334811}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetGasState
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: BurnerController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618932121139635788, guid: 1669abea14a9684498c272df128699bb,
-        type: 3}
-      propertyPath: onStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 4709591219781637712, guid: 1669abea14a9684498c272df128699bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2106,18 +2071,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28131931c5e032143adf76fbebe9bcc9, type: 3}
---- !u!114 &31770947817334811 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
-    type: 3}
-  m_PrefabInstance: {fileID: 2611306186462206850}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e442ada22cf20e54a84a2a686cd8f79c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &9098218949574793083 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6520760129392872697, guid: 28131931c5e032143adf76fbebe9bcc9,

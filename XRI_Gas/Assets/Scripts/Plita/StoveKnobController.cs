@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem; // Добавлено для работы с курком
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-[RequireComponent(typeof(XRSimpleInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable))]
 public class StoveKnobController : MonoBehaviour
 {
     [Header("Визуал и Вращение")]
@@ -25,29 +25,69 @@ public class StoveKnobController : MonoBehaviour
     [Tooltip("Это событие сработает при переключении. True - включено, False - выключено")]
     public UnityEvent<bool> onStateChanged;
 
-    [SerializeField] private XRSimpleInteractable interactable;
+    [Header("Управление (Указательный палец / Курок)")]
+    [Tooltip("Действие курка левой руки (обычно XRI LeftHand/Activate)")]
+    public InputActionReference leftTriggerAction;
+    [Tooltip("Действие курка правой руки (обычно XRI RightHand/Activate)")]
+    public InputActionReference rightTriggerAction;
+
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable interactable;
     public bool isOn = false;
+
+    // Переменная, которая запоминает, смотрим ли мы/касаемся ли мы сейчас ручки
+    private bool isHovered = false;
+
+    private void Awake()
+    {
+        interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
+    }
 
     private void OnEnable()
     {
-        interactable.selectEntered.AddListener(OnKnobInteracted);
+        // Подписываемся на НАВЕДЕНИЕ (когда луч или рука касается коллайдера ручки)
+        interactable.hoverEntered.AddListener(OnHoverEntered);
+        interactable.hoverExited.AddListener(OnHoverExited);
+
+        // Подписываемся на нажатие курков
+        if (leftTriggerAction != null) leftTriggerAction.action.performed += OnTriggerPressed;
+        if (rightTriggerAction != null) rightTriggerAction.action.performed += OnTriggerPressed;
     }
 
     private void OnDisable()
     {
-        interactable.selectEntered.RemoveListener(OnKnobInteracted);
+        // Отписываемся при выключении, чтобы избежать ошибок
+        interactable.hoverEntered.RemoveListener(OnHoverEntered);
+        interactable.hoverExited.RemoveListener(OnHoverExited);
+
+        if (leftTriggerAction != null) leftTriggerAction.action.performed -= OnTriggerPressed;
+        if (rightTriggerAction != null) rightTriggerAction.action.performed -= OnTriggerPressed;
     }
 
-    private void OnKnobInteracted(SelectEnterEventArgs args)
+    private void OnHoverEntered(HoverEnterEventArgs args)
     {
-        isOn = !isOn;
+        isHovered = true; // Мы навели луч или руку на ручку
+    }
 
-        if (clickSound != null)
+    private void OnHoverExited(HoverExitEventArgs args)
+    {
+        isHovered = false; // Мы убрали луч или руку
+    }
+
+    // Этот метод срабатывает ТОЛЬКО когда мы физически прожимаем курок на контроллере
+    private void OnTriggerPressed(InputAction.CallbackContext context)
+    {
+        // Если мы в этот момент смотрим на ручку (навели на нее)
+        if (isHovered)
         {
-            clickSound.Play();
-        }
+            isOn = !isOn;
 
-        onStateChanged.Invoke(isOn);
+            if (clickSound != null)
+            {
+                clickSound.Play();
+            }
+
+            onStateChanged.Invoke(isOn);
+        }
     }
 
     private void Update()
