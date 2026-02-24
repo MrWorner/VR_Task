@@ -60,6 +60,11 @@ public class GasDetectorController : MonoBehaviour
     {
         if (isNearGas == hasGas) return;
 
+        if (isNearGas)
+        {
+            GameManager.Instance.ReportLeakFound(); 
+        }
+
         isNearGas = hasGas;
         UpdateScreen();
     }

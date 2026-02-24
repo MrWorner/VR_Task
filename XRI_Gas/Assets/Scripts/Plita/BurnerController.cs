@@ -23,7 +23,7 @@ public class BurnerController : MonoBehaviour
     public bool isGasFlowing = false;
     public bool isLit = false;
     public string fireTag = "Fire";
-
+    private bool hasBeenTested = false;
     private void Start()
     {
         if (flameVisuals != null) flameVisuals.SetActive(false);
@@ -87,6 +87,12 @@ public class BurnerController : MonoBehaviour
     {
         isLit = true;
         if (gasHissSound != null) gasHissSound.Stop();
+
+        if (!hasBeenTested)
+        {
+            hasBeenTested = true;
+            GameManager.Instance.ReportBurnerTested();
+        }
 
         if (isDefective)
         {
