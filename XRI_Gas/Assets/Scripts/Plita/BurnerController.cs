@@ -4,18 +4,20 @@
 public class BurnerController : MonoBehaviour
 {
     [Header("Связь с ручкой")]
-    [Tooltip("Перетащите сюда объект ручки управления (на котором висит StoveKnobController)")]
     public StoveKnobController stoveKnob;
 
-    [Header("Визуал и Звук")]
-    [Tooltip("Перетащите сюда объект пламени конфорки")]
+    [Header("Нормальная работа (Визуал и Звук)")]
     public GameObject flameVisuals;
-
-    [Tooltip("Звук выхода газа (шипение)")]
     public AudioSource gasHissSound;
-
-    [Tooltip("Звук горения пламени")]
     public AudioSource fireSound;
+
+    [Header("Неисправность (Визуал и Звук)")]
+    [Tooltip("Поставьте галочку, чтобы эта конфорка работала с ошибкой")]
+    public bool isDefective = false;
+    [Tooltip("Перетащите сюда эффект дерганого/желтого пламени")]
+    public GameObject defectiveFlameVisuals;
+    [Tooltip("Перетащите сюда звук хлопков или потрескивания")]
+    public AudioSource defectiveFireSound;
 
     [Header("Текущее состояние")]
     public bool isGasFlowing = false;
@@ -25,6 +27,7 @@ public class BurnerController : MonoBehaviour
     private void Start()
     {
         if (flameVisuals != null) flameVisuals.SetActive(false);
+        if (defectiveFlameVisuals != null) defectiveFlameVisuals.SetActive(false);
 
         if (stoveKnob != null)
         {
@@ -56,8 +59,10 @@ public class BurnerController : MonoBehaviour
             isLit = false;
 
             if (flameVisuals != null) flameVisuals.SetActive(false);
+            if (defectiveFlameVisuals != null) defectiveFlameVisuals.SetActive(false);
             if (gasHissSound != null) gasHissSound.Stop();
             if (fireSound != null) fireSound.Stop();
+            if (defectiveFireSound != null) defectiveFireSound.Stop();
         }
     }
 
@@ -81,15 +86,19 @@ public class BurnerController : MonoBehaviour
     private void Ignite()
     {
         isLit = true;
-
-        if (flameVisuals != null) flameVisuals.SetActive(true);
-
         if (gasHissSound != null) gasHissSound.Stop();
-        if (fireSound != null) fireSound.Play();
 
-        Debug.Log("Конфорка успешно зажжена!");
-
-        // GameManager.Instance.isBurnerTested = true;
-        // GameManager.Instance.CheckWinCondition();
+        if (isDefective)
+        {
+            if (defectiveFlameVisuals != null) defectiveFlameVisuals.SetActive(true);
+            if (defectiveFireSound != null) defectiveFireSound.Play();
+            Debug.Log("Конфорка зажглась с ОШИБКОЙ (хлопки)!");
+        }
+        else
+        {
+            if (flameVisuals != null) flameVisuals.SetActive(true);
+            if (fireSound != null) fireSound.Play();
+            Debug.Log("Конфорка зажглась нормально.");
+        }
     }
 }
