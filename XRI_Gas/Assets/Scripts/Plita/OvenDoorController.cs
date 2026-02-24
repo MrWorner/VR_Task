@@ -32,7 +32,6 @@ public class OvenDoorController : MonoBehaviour
 
     private void OnEnable()
     {
-        // Используем activated, чтобы дверь срабатывала от курка (Trigger)
         interactable.activated.AddListener(OnDoorActivated);
     }
 
@@ -50,7 +49,6 @@ public class OvenDoorController : MonoBehaviour
     {
         isOpened = !isOpened;
 
-        // Проигрываем соответствующий звук
         if (isOpened && openSound != null) openSound.Play();
         else if (!isOpened && closeSound != null) closeSound.Play();
     }
@@ -59,7 +57,6 @@ public class OvenDoorController : MonoBehaviour
     {
         if (doorTransform == null) return;
 
-        // Плавный переход между углами
         Vector3 targetEuler = isOpened ? openRotation : closedRotation;
         Quaternion targetRotation = Quaternion.Euler(targetEuler);
 

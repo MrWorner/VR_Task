@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 5114078427147669598}
   - component: {fileID: 3372867013402955872}
   - component: {fileID: 8209864446697910438}
+  - component: {fileID: 721553506760851432}
   - component: {fileID: 3469218983170072818}
   m_Layer: 0
   m_Name: Stick
@@ -109,6 +110,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flameVisuals: {fileID: 7537450034588332902}
+--- !u!114 &721553506760851432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989435761419099393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b481d2814c929741bccf5a175a0c333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 3090949956022854202}
+  highlightMaterial: {fileID: 2100000, guid: 742ee293ba1bf2647a8a180abca182f1, type: 2}
 --- !u!114 &3469218983170072818
 MonoBehaviour:
   m_ObjectHideFlags: 0

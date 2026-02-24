@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7396656020253979048}
   - component: {fileID: 3334531591388615884}
   - component: {fileID: 3618932121139635788}
+  - component: {fileID: 5315682343032169925}
   - component: {fileID: 1160126945920529316}
   m_Layer: 0
   m_Name: Plita_RotateVolume
@@ -180,11 +181,21 @@ MonoBehaviour:
   onStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  leftTriggerAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  rightTriggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
   isOn: 0
+--- !u!114 &5315682343032169925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6635009773093078207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b481d2814c929741bccf5a175a0c333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 7396656020253979048}
+  highlightMaterial: {fileID: 2100000, guid: 742ee293ba1bf2647a8a180abca182f1, type: 2}
 --- !u!65 &1160126945920529316
 BoxCollider:
   m_ObjectHideFlags: 0

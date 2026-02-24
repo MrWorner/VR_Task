@@ -12,10 +12,8 @@ public class StickController : MonoBehaviour
 
     private void Awake()
     {
-        // Получаем компонент XRI, который уже висит на объекте Stick
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
 
-        // Гарантируем, что на старте огонь выключен, если спичку никто не держит
         if (flameVisuals != null)
         {
             flameVisuals.SetActive(false);
@@ -24,21 +22,18 @@ public class StickController : MonoBehaviour
 
     private void OnEnable()
     {
-        // Подписываемся на события взятия и отпускания объекта
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnDropped);
     }
 
     private void OnDisable()
     {
-        // Обязательно отписываемся от событий, чтобы избежать ошибок при удалении объекта
         grabInteractable.selectEntered.RemoveListener(OnGrabbed);
         grabInteractable.selectExited.RemoveListener(OnDropped);
     }
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
-        // Игрок взял спичку -> Включаем пламя
         if (flameVisuals != null)
         {
             flameVisuals.SetActive(true);
@@ -47,7 +42,6 @@ public class StickController : MonoBehaviour
 
     private void OnDropped(SelectExitEventArgs args)
     {
-        // Игрок отпустил спичку -> Выключаем пламя
         if (flameVisuals != null)
         {
             flameVisuals.SetActive(false);

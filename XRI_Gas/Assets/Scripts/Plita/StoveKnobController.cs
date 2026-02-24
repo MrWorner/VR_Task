@@ -35,7 +35,6 @@ public class StoveKnobController : MonoBehaviour
 
     private void OnEnable()
     {
-        // Срабатывает при нажатии (Select)
         //interactable.selectEntered.AddListener(OnSelected);
         interactable.activated.AddListener(OnActivated);
     }

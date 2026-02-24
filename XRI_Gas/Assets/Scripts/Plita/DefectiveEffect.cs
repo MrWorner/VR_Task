@@ -27,7 +27,6 @@ public class DefectiveEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        // Зажигаем огонь МГНОВЕННО при активации, не дожидаясь таймера
         UpdateFlames();
         StartCoroutine(FlickerRoutine());
     }
@@ -52,7 +51,6 @@ public class DefectiveEffect : MonoBehaviour
             float waitTime = Random.Range(minTime, maxTime);
             yield return new WaitForSeconds(waitTime);
 
-            // После ожидания обновляем состояние пламени
             UpdateFlames();
         }
     }
@@ -65,7 +63,6 @@ public class DefectiveEffect : MonoBehaviour
         {
             foreach (Transform flame in flames)
             {
-                // 60% шанс, что горит, 40% - что гаснет
                 bool isBurning = Random.value > 0.4f;
                 flame.gameObject.SetActive(isBurning);
             }
