@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1549860826932360443}
   - component: {fileID: 2282442235445210199}
   - component: {fileID: 5492378330494309101}
+  - component: {fileID: 3821059927600392594}
   m_Layer: 0
   m_Name: MatchesBox
-  m_TagString: Untagged
+  m_TagString: Matchbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -227,6 +228,27 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!65 &3821059927600392594
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859670986006441753}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.06284839, y: 0.017998144, z: 0.08547203}
+  m_Center: {x: 0.0000000018626451, y: 0.008999072, z: 0.000102708116}
 --- !u!1 &1736111247332035962
 GameObject:
   m_ObjectHideFlags: 0

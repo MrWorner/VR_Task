@@ -1,50 +1,76 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class StickController : MonoBehaviour
 {
-    [Header("Ссылки на объекты")]
-    [Tooltip("Перетащите сюда объект Flame Orange")]
+    [Header("Настройки огня")]
     public GameObject flameVisuals;
+    public bool isLit = false;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
+    [Header("Настройки чирканья")]
+    public float ignitionThreshold = 0.5f;
+    public string matchboxTag = "Matchbox";
+
+    [SerializeField] private XRGrabInteractable grabInteractable;
+    private Vector3 lastPosition;
+    private Vector3 currentVelocity;
 
     private void Awake()
     {
-        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (flameVisuals != null) flameVisuals.SetActive(false);
+    }
 
-        if (flameVisuals != null)
+    private void Update()
+    {
+        currentVelocity = (transform.position - lastPosition) / Time.deltaTime;
+        lastPosition = transform.position;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (isLit) return;
+
+        if (other.CompareTag(matchboxTag))
         {
-            flameVisuals.SetActive(false);
+            Vector3 boxVelocity = Vector3.zero;
+            Rigidbody boxRb = other.attachedRigidbody;
+
+            float speed = currentVelocity.magnitude;
+
+            Debug.Log($"Чирканье (триггер)! Скорость: {speed}");
+
+            if (speed >= ignitionThreshold)
+            {
+                Ignite();
+            }
         }
     }
 
-    private void OnEnable()
+    private void Ignite()
     {
-        grabInteractable.selectEntered.AddListener(OnGrabbed);
-        grabInteractable.selectExited.AddListener(OnDropped);
+        isLit = true;
+        if (flameVisuals != null) flameVisuals.SetActive(true);
+
+        SendHaptic(0.7f, 0.15f);
     }
 
-    private void OnDisable()
-    {
-        grabInteractable.selectEntered.RemoveListener(OnGrabbed);
-        grabInteractable.selectExited.RemoveListener(OnDropped);
-    }
-
-    private void OnGrabbed(SelectEnterEventArgs args)
-    {
-        if (flameVisuals != null)
-        {
-            flameVisuals.SetActive(true);
-        }
-    }
+    private void OnEnable() => grabInteractable.selectExited.AddListener(OnDropped);
+    private void OnDisable() => grabInteractable.selectExited.RemoveListener(OnDropped);
 
     private void OnDropped(SelectExitEventArgs args)
     {
-        if (flameVisuals != null)
+        isLit = false;
+        if (flameVisuals != null) flameVisuals.SetActive(false);
+    }
+
+    private void SendHaptic(float intensity, float duration)
+    {
+        if (grabInteractable.interactorsSelecting.Count > 0)
         {
-            flameVisuals.SetActive(false);
+            var interactor = grabInteractable.interactorsSelecting[0];
+            if (interactor is UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInputInteractor inputInteractor)
+                inputInteractor.SendHapticImpulse(intensity, duration);
         }
     }
 }
