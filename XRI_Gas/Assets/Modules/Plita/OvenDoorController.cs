@@ -1,72 +1,127 @@
-﻿using UnityEngine;
+﻿// НАЗНАЧЕНИЕ: Контроллер дверцы духовки для VR-взаимодействия.
+
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using NaughtyAttributes;
+using DG.Tweening;
 
 [RequireComponent(typeof(XRSimpleInteractable))]
-[RequireComponent(typeof(AudioSource))] 
+[RequireComponent(typeof(AudioSource))]
 public class OvenDoorController : MonoBehaviour
 {
-    [Header("Настройки вращения")]
-    [Tooltip("Объект двери или Pivot, который будет вращаться")]
-    public Transform doorTransform;
-    public Vector3 closedRotation = Vector3.zero;
-    public Vector3 openRotation = new Vector3(90f, 0, 0);
-    public float rotationSpeed = 5f;
+    #region Поля: Required
+    [BoxGroup("Required"), Required, SerializeField]
+    private Transform _doorTransform;
 
-    [Header("Звуки (Аудио клипы)")]
-    public AudioClip openClip;
-    public AudioClip closeClip;
+    [BoxGroup("Required"), Required, SerializeField]
+    private XRSimpleInteractable _interactable;
 
-    [SerializeField] private XRSimpleInteractable interactable;
-    [SerializeField] private AudioSource audioSource;
-    public bool isOpened = false;
+    [BoxGroup("Required"), Required, SerializeField]
+    private AudioSource _audioSource;
+    #endregion
 
+    #region Поля
+    [BoxGroup("SETTINGS"), SerializeField]
+    private Vector3 _closedRotation = Vector3.zero;
+
+    [BoxGroup("SETTINGS"), SerializeField]
+    private Vector3 _openRotation = new Vector3(90f, 0, 0);
+
+    [BoxGroup("SETTINGS"), SerializeField]
+    [Tooltip("Длительность анимации (вместо скорости)")]
+    private float _animationDuration = 0.5f;
+
+    [BoxGroup("SETTINGS"), SerializeField]
+    private AudioClip _openClip;
+
+    [BoxGroup("SETTINGS"), SerializeField]
+    private AudioClip _closeClip;
+
+    [BoxGroup("DEBUG"), SerializeField, ReadOnly]
+    private bool _isOpened;
+
+    [BoxGroup("DEBUG"), SerializeField]
+    protected bool _ColoredDebug;
+    #endregion
+
+    #region Свойства
+    public bool IsOpened => _isOpened;
+    #endregion
+
+    #region Unity Методы
     private void Awake()
     {
-        audioSource.playOnAwake = false;
-        audioSource.loop = false;
+        if (_audioSource != null)
+        {
+            _audioSource.playOnAwake = false;
+            _audioSource.loop = false;
+        }
+        else
+        {
+            ColoredDebug.CLog(gameObject, "<color=red>[ERROR]</color> Отсутствует ссылка на AudioSource!", _ColoredDebug);
+        }
+
+        if (_doorTransform == null || _interactable == null)
+        {
+            ColoredDebug.CLog(gameObject, "<color=red>[ERROR]</color> Не все обязательные ссылки (Required) назначены!", _ColoredDebug);
+        }
     }
 
     private void OnEnable()
     {
-        interactable.activated.AddListener(OnDoorActivated);
+        if (_interactable != null)
+            _interactable.activated.AddListener(OnDoorActivated);
     }
 
     private void OnDisable()
     {
-        interactable.activated.RemoveListener(OnDoorActivated);
+        if (_interactable != null)
+            _interactable.activated.RemoveListener(OnDoorActivated);
     }
+    #endregion
 
+    #region Публичные методы
+    [Button("Toggle Door")]
+    public void ToggleDoor()
+    {
+        _isOpened = !_isOpened;
+
+        PlaySound();
+        AnimateDoor();
+
+        ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Дверца переключена. IsOpened: {0}", _ColoredDebug, _isOpened);
+    }
+    #endregion
+
+    #region Личные методы
     private void OnDoorActivated(ActivateEventArgs args)
     {
         ToggleDoor();
     }
 
-    public void ToggleDoor()
+    private void PlaySound()
     {
-        isOpened = !isOpened;
+        if (_audioSource == null) return;
 
-        if (isOpened && openClip != null)
-        {
-            audioSource.PlayOneShot(openClip);
-        }
-        else if (!isOpened && closeClip != null)
-        {
-            audioSource.PlayOneShot(closeClip);
-        }
+        AudioClip clipToPlay = _isOpened ? _openClip : _closeClip;
+
+        if (clipToPlay != null)
+            _audioSource.PlayOneShot(clipToPlay);
     }
 
-    private void Update()
+    private void AnimateDoor()
     {
-        if (doorTransform == null) return;
+        if (_doorTransform == null) return;
 
-        Vector3 targetEuler = isOpened ? openRotation : closedRotation;
-        Quaternion targetRotation = Quaternion.Euler(targetEuler);
+        Vector3 targetEuler = _isOpened ? _openRotation : _closedRotation;
 
-        doorTransform.localRotation = Quaternion.Slerp(
-            doorTransform.localRotation,
-            targetRotation,
-            Time.deltaTime * rotationSpeed
-        );
+        var seq = DOTween.Sequence();
+        seq.Append(_doorTransform.DOLocalRotate(targetEuler, _animationDuration));
+        seq.OnComplete(() =>
+        {
+            ColoredDebug.CLog(gameObject, "<color=cyan>[INFO]</color> Анимация дверцы завершена.", _ColoredDebug);
+        });
     }
+    #endregion
 }

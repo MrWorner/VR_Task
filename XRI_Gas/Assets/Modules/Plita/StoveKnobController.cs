@@ -1,76 +1,112 @@
-﻿using UnityEngine;
+﻿// НАЗНАЧЕНИЕ: Контроллер поворотной ручки плиты для VR
+
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using NaughtyAttributes;
+using DG.Tweening;
 
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable))]
+[RequireComponent(typeof(XRSimpleInteractable))]
 public class StoveKnobController : MonoBehaviour
 {
-    [Header("Визуал и Вращение")]
-    [Tooltip("Объект, который визуально крутится (Mesh)")]
-    public Transform knobVisuals;
+    [BoxGroup("Events")]
+    public UnityEvent<bool> OnStateChanged;
 
-    [Tooltip("Углы Эйлера (XYZ) в выключенном состоянии")]
-    public Vector3 offRotation = Vector3.zero;
+    #region Поля: Required
+    [BoxGroup("Required"), Required, SerializeField]
+    private XRSimpleInteractable _interactable;
 
-    [Tooltip("Углы Эйлера (XYZ) во включенном состоянии")]
-    public Vector3 onRotation = new Vector3(0, 0, 90f);
+    [BoxGroup("Required"), Required, SerializeField]
+    private Transform _knobVisuals;
+    #endregion
 
-    [Tooltip("Скорость плавного поворота")]
-    public float rotationSpeed = 10f;
+    #region Поля
+    [BoxGroup("SETTINGS"), SerializeField]
+    private Vector3 _offRotation = Vector3.zero;
 
-    [Header("Звук и События")]
-    public AudioSource clickSound;
+    [BoxGroup("SETTINGS"), SerializeField]
+    private Vector3 _onRotation = new Vector3(0, 0, 90f);
 
-    [Tooltip("True - включено, False - выключено")]
-    public UnityEvent<bool> onStateChanged;
+    [BoxGroup("SETTINGS"), SerializeField]
+    private float _rotateDuration = 0.3f;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable interactable;
+    [BoxGroup("SETTINGS"), SerializeField]
+    private AudioSource _clickSound;
 
-    public bool isOn = false;
+    [BoxGroup("DEBUG"), SerializeField, ReadOnly]
+    private bool _isOn;
 
+    [BoxGroup("DEBUG"), SerializeField]
+    protected bool _ColoredDebug;
+    #endregion
+
+    #region Свойства
+    public bool IsOn => _isOn;
+    #endregion
+
+    #region Unity Методы
     private void Awake()
     {
-        interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
+        if (_interactable == null)
+            DebugUtils.LogMissingReference(this, nameof(_interactable));
+
+        if (_knobVisuals == null)
+            DebugUtils.LogMissingReference(this, nameof(_knobVisuals));
     }
 
     private void OnEnable()
     {
-        //interactable.selectEntered.AddListener(OnSelected);
-        interactable.activated.AddListener(OnActivated);
-    }
-    private void OnDisable()
-    {
-        interactable.activated.RemoveListener(OnActivated);
+        if (_interactable != null)
+            _interactable.activated.AddListener(OnActivated);
     }
 
+    private void OnDisable()
+    {
+        if (_interactable != null)
+            _interactable.activated.RemoveListener(OnActivated);
+    }
+    #endregion
+
+    #region Публичные методы
+    [Button("Toggle Knob")]
+    public void ToggleKnob()
+    {
+        _isOn = !_isOn;
+
+        PlayClickSound();
+        AnimateRotation();
+
+        OnStateChanged?.Invoke(_isOn);
+
+        ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Состояние ручки изменено: {0}", _ColoredDebug, _isOn);
+    }
+    #endregion
+
+    #region Личные методы
     private void OnActivated(ActivateEventArgs args)
     {
         ToggleKnob();
     }
 
-
-    private void ToggleKnob()
+    private void PlayClickSound()
     {
-        isOn = !isOn;
-
-        if (clickSound != null)
-            clickSound.Play();
-
-        onStateChanged.Invoke(isOn);
+        if (_clickSound != null)
+            _clickSound.Play();
     }
 
-    private void Update()
+    private void AnimateRotation()
     {
-        if (knobVisuals == null)
-            return;
+        if (_knobVisuals == null) return;
 
-        Vector3 targetEuler = isOn ? onRotation : offRotation;
-        Quaternion targetRotation = Quaternion.Euler(targetEuler);
+        Vector3 targetEuler = _isOn ? _onRotation : _offRotation;
 
-        knobVisuals.localRotation = Quaternion.Lerp(
-            knobVisuals.localRotation,
-            targetRotation,
-            Time.deltaTime * rotationSpeed
-        );
+        var seq = DOTween.Sequence();
+        seq.Append(_knobVisuals.DOLocalRotate(targetEuler, _rotateDuration).SetEase(Ease.OutBack));
+        seq.OnComplete(() =>
+        {
+            ColoredDebug.CLog(gameObject, "<color=cyan>[INFO]</color> Поворот ручки завершен.", _ColoredDebug);
+        });
     }
+    #endregion
 }

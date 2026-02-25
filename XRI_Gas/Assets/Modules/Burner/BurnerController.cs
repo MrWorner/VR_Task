@@ -76,15 +76,15 @@ public class BurnerController : MonoBehaviour
 
         if (_stoveKnob != null)
         {
-            _isGasFlowing = _stoveKnob.isOn;
+            _isGasFlowing = _stoveKnob.IsOn;
         }
     }
 
     private void Update()
     {
-        if (_stoveKnob != null && _stoveKnob.isOn != _isGasFlowing)
+        if (_stoveKnob != null && _stoveKnob.IsOn != _isGasFlowing)
         {
-            SetGasState(_stoveKnob.isOn);
+            SetGasState(_stoveKnob.IsOn);
         }
     }
 
