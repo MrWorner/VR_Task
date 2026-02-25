@@ -1,6 +1,4 @@
 ﻿// НАЗНАЧЕНИЕ: Управляет логикой работы конфорки, эффектами пламени и звуками. 
-// ЗАВИСИМОСТИ: StoveKnobController, GameManager, AudioSource. 
-// ПРИМЕЧАНИЕ: Поддерживает логирование через ColoredDebug и работает без GetComponent. 
 
 using UnityEngine;
 using NaughtyAttributes;

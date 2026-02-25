@@ -1988,6 +1988,11 @@ PrefabInstance:
       propertyPath: isDefective
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2616000559496852377, guid: 28131931c5e032143adf76fbebe9bcc9,
+        type: 3}
+      propertyPath: _isDefective
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4502387595190079946, guid: 28131931c5e032143adf76fbebe9bcc9,
         type: 3}
       propertyPath: m_Name

@@ -1,79 +1,118 @@
-﻿using System.Collections;
+﻿// НАЗНАЧЕНИЕ: Управляет эффектом случайного мерцания группы объектов (например, язычков пламени).
+
+using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
+using System;
+using System.Threading;
 using UnityEngine;
 
 public class DefectiveEffect : MonoBehaviour
 {
-    [Header("Тайминги мерцания (в секундах)")]
-    [Tooltip("Минимальное время (0.05 = 50 миллисекунд)")]
-    public float minTime = 0.05f;
+    #region Поля
+    [BoxGroup("SETTINGS"), Tooltip("Минимальное время (в секундах)"), SerializeField]
+    private float _minTime = 0.05f;
 
-    [Tooltip("Максимальное время (0.2 = 200 миллисекунд)")]
-    public float maxTime = 0.2f;
+    [BoxGroup("SETTINGS"), Tooltip("Максимальное время (в секундах)"), SerializeField]
+    private float _maxTime = 0.2f;
 
-    [Header("Настройки эффекта")]
-    [Tooltip("Если включено, язычки пламени мерцают вразнобой. Если выключено - всё пламя гаснет и загорается целиком.")]
-    public bool independentFlicker = true;
+    [BoxGroup("SETTINGS"), Tooltip("Язычки мерцают вразнобой (true) или одновременно (false)"), SerializeField]
+    private bool _independentFlicker = true;
 
-    private Transform[] flames;
+    [BoxGroup("SETTINGS"), Tooltip("Шанс горения при независимом мерцании (было 0.4)"), SerializeField, Range(0f, 1f)]
+    private float _burnThresholdIndependent = 0.4f;
 
+    [BoxGroup("SETTINGS"), Tooltip("Шанс горения при синхронном мерцании (было 0.5)"), SerializeField, Range(0f, 1f)]
+    private float _burnThresholdUnified = 0.5f;
+
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private Transform[] _flames;
+
+    [BoxGroup("DEBUG"), SerializeField]
+    protected bool _ColoredDebug;
+
+    private CancellationTokenSource _cancellationTokenSource;
+    #endregion
+
+    #region Unity Методы
     private void Awake()
     {
-        flames = new Transform[transform.childCount];
+        _flames = new Transform[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
         {
-            flames[i] = transform.GetChild(i);
+            _flames[i] = transform.GetChild(i);
         }
+
+        ColoredDebug.CLog(gameObject, "<color=cyan>[INFO]</color> Инициализация завершена, собрано объектов: {0}", _ColoredDebug, _flames.Length);
     }
 
     private void OnEnable()
     {
+        _cancellationTokenSource = new CancellationTokenSource();
         UpdateFlames();
-        StartCoroutine(FlickerRoutine());
+        FlickerRoutineAsync(_cancellationTokenSource.Token).Forget();
     }
 
     private void OnDisable()
     {
-        StopAllCoroutines();
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
 
-        if (flames != null)
+        if (_flames != null)
         {
-            foreach (Transform flame in flames)
+            foreach (Transform flame in _flames)
             {
-                flame.gameObject.SetActive(false);
+                if (flame != null) flame.gameObject.SetActive(false);
             }
         }
+
+        ColoredDebug.CLog(gameObject, "<color=orange>[SYSTEM]</color> Мерцание отключено.", _ColoredDebug);
     }
+    #endregion
 
-    private IEnumerator FlickerRoutine()
+    #region Личные методы
+    private async UniTaskVoid FlickerRoutineAsync(CancellationToken token)
     {
-        while (true)
+        try
         {
-            float waitTime = Random.Range(minTime, maxTime);
-            yield return new WaitForSeconds(waitTime);
+            while (!token.IsCancellationRequested)
+            {
+                float waitTime = UnityEngine.Random.Range(_minTime, _maxTime);
+                await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
 
-            UpdateFlames();
+                UpdateFlames();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+           
+        }
+        catch (Exception e)
+        {
+            ColoredDebug.CLog(gameObject, "<color=red>[ERROR]</color> {0}", _ColoredDebug, e.Message);
         }
     }
 
     private void UpdateFlames()
     {
-        if (flames == null) return;
+        if (_flames == null) return;
 
-        if (independentFlicker)
+        if (_independentFlicker)
         {
-            foreach (Transform flame in flames)
+            foreach (Transform flame in _flames)
             {
-                bool isBurning = Random.value > 0.4f;
+                bool isBurning = UnityEngine.Random.value > _burnThresholdIndependent;
                 flame.gameObject.SetActive(isBurning);
             }
         }
         else
         {
-            bool isBurning = Random.value > 0.5f;
-            foreach (Transform flame in flames)
+            bool isBurning = UnityEngine.Random.value > _burnThresholdUnified;
+            foreach (Transform flame in _flames)
             {
                 flame.gameObject.SetActive(isBurning);
             }
         }
     }
+    #endregion
 }
