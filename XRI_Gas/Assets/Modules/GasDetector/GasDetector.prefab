@@ -66,7 +66,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa313adc44217e4b868627cc69ded38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainController: {fileID: 5462049036123325271}
+  _mainController: {fileID: 5462049036123325271}
+  _collider: {fileID: 4105767162930553112}
+  _gasLeakZoneTag: GasLeakZone
+  _burnerZoneTag: BurnerZone
+  _activeZones: []
+  _ColoredDebug: 0
 --- !u!1 &1276587242130784594
 GameObject:
   m_ObjectHideFlags: 0

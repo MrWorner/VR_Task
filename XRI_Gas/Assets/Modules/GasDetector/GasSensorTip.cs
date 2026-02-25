@@ -1,71 +1,91 @@
-﻿using System.Collections.Generic;
+﻿// НАЗНАЧЕНИЕ: Отслеживание зон утечки газа и конфорок для детектора газа.
+
+using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 [RequireComponent(typeof(Collider))]
 public class GasSensorTip : MonoBehaviour
 {
-    [Tooltip("Перетащите сюда корневой объект GasDetector")]
-    public GasDetectorController mainController;
+    #region Поля: Required
+    [BoxGroup("Required"), Required, SerializeField]
+    private GasDetectorController _mainController;
+    #endregion
 
-    private List<Collider> activeZones = new List<Collider>();
+    #region Поля
+    [BoxGroup("SETTINGS"), SerializeField]
+    private string _gasLeakZoneTag = "GasLeakZone";
 
-    private void Start()
-    {
-        GetComponent<Collider>().isTrigger = true;
-    }
+    [BoxGroup("SETTINGS"), SerializeField]
+    private string _burnerZoneTag = "BurnerZone";
 
+    [BoxGroup("DEBUG"), SerializeField, ReadOnly]
+    private List<Collider> _activeZones = new List<Collider>();
+
+    [BoxGroup("DEBUG"), SerializeField]
+    protected bool _ColoredDebug;
+    #endregion
+
+    #region Свойства
+    #endregion
+
+    #region Unity Методы
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("GasLeakZone") || other.CompareTag("BurnerZone"))
+        if (other.CompareTag(_gasLeakZoneTag) || other.CompareTag(_burnerZoneTag))
         {
-            if (!activeZones.Contains(other))
+            if (!_activeZones.Contains(other))
             {
-                activeZones.Add(other);
+                _activeZones.Add(other);
+                ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Вход в зону: {0}", _ColoredDebug, other.name);
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (activeZones.Contains(other))
+        if (_activeZones.Contains(other))
         {
-            activeZones.Remove(other);
+            _activeZones.Remove(other);
+            ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Выход из зоны: {0}", _ColoredDebug, other.name);
         }
     }
 
     private void Update()
     {
-        if (mainController == null) return;
+        if (_mainController == null) return;
 
         bool detectGas = false;
 
-        for (int i = activeZones.Count - 1; i >= 0; i--)
+        for (int i = _activeZones.Count - 1; i >= 0; i--)
         {
-            Collider zone = activeZones[i];
+            Collider zone = _activeZones[i];
 
             if (zone == null || !zone.gameObject.activeInHierarchy)
             {
-                activeZones.RemoveAt(i);
+                _activeZones.RemoveAt(i);
                 continue;
             }
 
-            if (zone.CompareTag("GasLeakZone"))
+            if (zone.CompareTag(_gasLeakZoneTag))
             {
                 detectGas = true;
                 break;
             }
-            else if (zone.CompareTag("BurnerZone"))
+            else if (zone.CompareTag(_burnerZoneTag))
             {
-                BurnerController burner = zone.GetComponent<BurnerController>();
-
-                if (burner != null && burner.IsGasFlowing && !burner.IsLit)
+                if (zone.TryGetComponent(out BurnerController burner))
                 {
-                    detectGas = true;
-                    break;
+                    if (burner.IsGasFlowing && !burner.IsLit)
+                    {
+                        detectGas = true;
+                        break;
+                    }
                 }
             }
         }
 
-        mainController.SetGasDetected(detectGas);
+        _mainController.SetGasDetected(detectGas);
     }
+    #endregion
 }
