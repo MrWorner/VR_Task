@@ -532,17 +532,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1668c75a9a7a80b4ab96a98068996a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundImage: {fileID: 582611287229924659}
-  iconImage: {fileID: 7382129144526942081}
-  waitingSprite: {fileID: 21300000, guid: 63ab4a2b85c53e045939ad2e4d853799, type: 3}
-  okSprite: {fileID: 21300000, guid: be4eb472161723f4886e97a9cf6fadb3, type: 3}
-  alertSprite: {fileID: 21300000, guid: a899dbeb9a6938543a831bca8863f497, type: 3}
-  colorWaiting: {r: 0, g: 0, b: 0, a: 1}
-  colorOk: {r: 0, g: 1, b: 0.47852516, a: 1}
-  colorAlert: {r: 1, g: 0, b: 0, a: 1}
-  alertClip: {fileID: 8300000, guid: 533409839b6d5e04dab5d00962da9b62, type: 3}
-  grabClip: {fileID: 8300000, guid: 74309d5ee398ea144b1578be1150d5ff, type: 3}
-  dropClip: {fileID: 8300000, guid: b23fac757ea6f4849badffd0b7f22c3e, type: 3}
+  _backgroundImage: {fileID: 582611287229924659}
+  _iconImage: {fileID: 7382129144526942081}
+  _grabInteractable: {fileID: 745566744040225281}
+  _audioSource: {fileID: 3110403031070872245}
+  _waitingSprite: {fileID: 21300000, guid: 63ab4a2b85c53e045939ad2e4d853799, type: 3}
+  _okSprite: {fileID: 21300000, guid: be4eb472161723f4886e97a9cf6fadb3, type: 3}
+  _alertSprite: {fileID: 21300000, guid: a899dbeb9a6938543a831bca8863f497, type: 3}
+  _colorWaiting: {r: 0, g: 0, b: 0, a: 1}
+  _colorOk: {r: 0, g: 1, b: 0.23359394, a: 1}
+  _colorAlert: {r: 1, g: 0, b: 0, a: 1}
+  _alertClip: {fileID: 8300000, guid: 533409839b6d5e04dab5d00962da9b62, type: 3}
+  _grabClip: {fileID: 8300000, guid: 74309d5ee398ea144b1578be1150d5ff, type: 3}
+  _dropClip: {fileID: 8300000, guid: b23fac757ea6f4849badffd0b7f22c3e, type: 3}
+  _isGrabbed: 0
+  _isNearGas: 0
+  _ColoredDebug: 0
 --- !u!114 &4671641599133161209
 MonoBehaviour:
   m_ObjectHideFlags: 0

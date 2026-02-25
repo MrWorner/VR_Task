@@ -1,72 +1,115 @@
-﻿using UnityEngine;
+﻿// НАЗНАЧЕНИЕ: Управляет газоанализатором, его визуальными состояниями (UI) и звуковыми оповещениями.
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using NaughtyAttributes;
 
-[RequireComponent(typeof(XRGrabInteractable))]
-[RequireComponent(typeof(AudioSource))]
 public class GasDetectorController : MonoBehaviour
 {
-    [Header("Ссылки на UI")]
-    public Image backgroundImage;
-    public Image iconImage;
+    #region Поля: Required
+    [BoxGroup("Required"), Required, SerializeField] private Image _backgroundImage;
+    [BoxGroup("Required"), Required, SerializeField] private Image _iconImage;
+    [BoxGroup("Required"), Required, SerializeField] private XRGrabInteractable _grabInteractable;
+    [BoxGroup("Required"), Required, SerializeField] private AudioSource _audioSource;
+    #endregion
 
-    [Header("Спрайты (Иконки)")]
-    public Sprite waitingSprite;
-    public Sprite okSprite;
-    public Sprite alertSprite;
+    #region Поля
+    [BoxGroup("SETTINGS/Sprites"), SerializeField] private Sprite _waitingSprite;
+    [BoxGroup("SETTINGS/Sprites"), SerializeField] private Sprite _okSprite;
+    [BoxGroup("SETTINGS/Sprites"), SerializeField] private Sprite _alertSprite;
 
-    [Header("Цвета фона")]
-    public Color colorWaiting = Color.black;
-    public Color colorOk = Color.gray;
-    public Color colorAlert = Color.red;
+    [BoxGroup("SETTINGS/Colors"), SerializeField] private Color _colorWaiting = Color.black;
+    [BoxGroup("SETTINGS/Colors"), SerializeField] private Color _colorOk = Color.gray;
+    [BoxGroup("SETTINGS/Colors"), SerializeField] private Color _colorAlert = Color.red;
 
-    [Header("Аудио Клипы")]
+    [BoxGroup("SETTINGS/Audio"), SerializeField]
     [Tooltip("Звук сирены при обнаружении газа (зациклен)")]
-    public AudioClip alertClip;
+    private AudioClip _alertClip;
+
+    [BoxGroup("SETTINGS/Audio"), SerializeField]
     [Tooltip("Короткий Beep при взятии в руку")]
-    public AudioClip grabClip;
+    private AudioClip _grabClip;
+
+    [BoxGroup("SETTINGS/Audio"), SerializeField]
     [Tooltip("Милый писк при выбрасывании предмета")]
-    public AudioClip dropClip;
+    private AudioClip _dropClip;
 
-    private XRGrabInteractable grabInteractable;
-    private AudioSource audioSource;
-    private bool isGrabbed = false;
-    private bool isNearGas = false;
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private bool _isGrabbed = false;
 
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private bool _isNearGas = false;
+
+    [BoxGroup("DEBUG"), SerializeField] protected bool _ColoredDebug;
+    #endregion
+
+    #region Unity Методы
     private void Awake()
     {
-        grabInteractable = GetComponent<XRGrabInteractable>();
-        audioSource = GetComponent<AudioSource>();
+        if (_backgroundImage == null) DebugUtils.LogMissingReference(this, nameof(_backgroundImage));
+        if (_iconImage == null) DebugUtils.LogMissingReference(this, nameof(_iconImage));
+        if (_grabInteractable == null) DebugUtils.LogMissingReference(this, nameof(_grabInteractable));
+        if (_audioSource == null) DebugUtils.LogMissingReference(this, nameof(_audioSource));
 
-        audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 1.0f; 
+        if (_audioSource != null)
+        {
+            _audioSource.playOnAwake = false;
+            _audioSource.spatialBlend = 1.0f;
+        }
     }
 
     private void OnEnable()
     {
-        grabInteractable.selectEntered.AddListener(OnGrabbed);
-        grabInteractable.selectExited.AddListener(OnDropped);
+        if (_grabInteractable != null)
+        {
+            _grabInteractable.selectEntered.AddListener(OnGrabbed);
+            _grabInteractable.selectExited.AddListener(OnDropped);
+        }
     }
 
     private void OnDisable()
     {
-        grabInteractable.selectEntered.RemoveListener(OnGrabbed);
-        grabInteractable.selectExited.RemoveListener(OnDropped);
+        if (_grabInteractable != null)
+        {
+            _grabInteractable.selectEntered.RemoveListener(OnGrabbed);
+            _grabInteractable.selectExited.RemoveListener(OnDropped);
+        }
     }
 
     private void Start()
     {
         UpdateScreen();
     }
+    #endregion
 
+    #region Публичные методы
+    public void SetGasDetected(bool hasGas)
+    {
+        if (_isNearGas == hasGas) return;
+
+        _isNearGas = hasGas;
+        ColoredDebug.CLog(gameObject, "<color=orange>[SYSTEM]</color> Статус газа изменен. Обнаружен газ: {0}", _ColoredDebug, _isNearGas);
+
+        if (_isNearGas && GameManager.Instance != null)
+        {
+            GameManager.Instance.ReportLeakFound();
+        }
+
+        UpdateScreen();
+    }
+    #endregion
+
+    #region Личные методы
     private void OnGrabbed(SelectEnterEventArgs args)
     {
-        isGrabbed = true;
+        _isGrabbed = true;
+        ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Газоанализатор взят в руку", _ColoredDebug);
 
-        if (grabClip != null)
+        if (_grabClip != null && _audioSource != null)
         {
-            audioSource.PlayOneShot(grabClip);
+            _audioSource.PlayOneShot(_grabClip);
         }
 
         UpdateScreen();
@@ -74,25 +117,12 @@ public class GasDetectorController : MonoBehaviour
 
     private void OnDropped(SelectExitEventArgs args)
     {
-        isGrabbed = false;
+        _isGrabbed = false;
+        ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Газоанализатор выпущен из рук", _ColoredDebug);
 
-        if (dropClip != null)
+        if (_dropClip != null && _audioSource != null)
         {
-            audioSource.PlayOneShot(dropClip);
-        }
-
-        UpdateScreen();
-    }
-
-    public void SetGasDetected(bool hasGas)
-    {
-        if (isNearGas == hasGas) return;
-
-        isNearGas = hasGas;
-
-        if (isNearGas)
-        {
-            if (GameManager.Instance != null) GameManager.Instance.ReportLeakFound();
+            _audioSource.PlayOneShot(_dropClip);
         }
 
         UpdateScreen();
@@ -100,22 +130,24 @@ public class GasDetectorController : MonoBehaviour
 
     private void UpdateScreen()
     {
-        if (!isGrabbed)
+        if (_backgroundImage == null || _iconImage == null) return;
+
+        if (!_isGrabbed)
         {
-            backgroundImage.color = colorWaiting;
-            if (waitingSprite != null) iconImage.sprite = waitingSprite;
+            _backgroundImage.color = _colorWaiting;
+            if (_waitingSprite != null) _iconImage.sprite = _waitingSprite;
         }
         else
         {
-            if (isNearGas)
+            if (_isNearGas)
             {
-                backgroundImage.color = colorAlert;
-                if (alertSprite != null) iconImage.sprite = alertSprite;
+                _backgroundImage.color = _colorAlert;
+                if (_alertSprite != null) _iconImage.sprite = _alertSprite;
             }
             else
             {
-                backgroundImage.color = colorOk;
-                if (okSprite != null) iconImage.sprite = okSprite;
+                _backgroundImage.color = _colorOk;
+                if (_okSprite != null) _iconImage.sprite = _okSprite;
             }
         }
 
@@ -124,23 +156,26 @@ public class GasDetectorController : MonoBehaviour
 
     private void HandleAlertSound()
     {
-        bool shouldAlarm = isGrabbed && isNearGas;
+        if (_audioSource == null) return;
+
+        bool shouldAlarm = _isGrabbed && _isNearGas;
 
         if (shouldAlarm)
         {
-            if (audioSource.clip != alertClip || !audioSource.isPlaying)
+            if (_audioSource.clip != _alertClip || !_audioSource.isPlaying)
             {
-                audioSource.clip = alertClip;
-                audioSource.loop = true;
-                audioSource.Play();
+                _audioSource.clip = _alertClip;
+                _audioSource.loop = true;
+                _audioSource.Play();
             }
         }
         else
         {
-            if (audioSource.clip == alertClip)
+            if (_audioSource.clip == _alertClip)
             {
-                audioSource.Stop();
+                _audioSource.Stop();
             }
         }
     }
+    #endregion
 }

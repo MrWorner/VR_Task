@@ -1,70 +1,94 @@
-﻿using UnityEngine;
-using TMPro; // Для работы с текстом UI
+﻿// НАЗНАЧЕНИЕ: Управляет логикой победы и общим состоянием диагностики.
+
+using UnityEngine;
+using NaughtyAttributes;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    private static GameManager _instance;
+    public static GameManager Instance => _instance;
 
-    [Header("Настройки победы")]
-    [Tooltip("Сколько всего конфорок нужно проверить?")]
-    public int totalBurnersToTest = 4;
-
-    [Header("UI (Интерфейс)")]
+    #region Поля: Required
+    [BoxGroup("Required"), Required, SerializeField]
     [Tooltip("Перетащите сюда панель с сообщением об успехе")]
-    public GameObject successPanel;
+    private GameObject _successPanel;
+    #endregion
 
-    private int burnersTested = 0;
-    private bool isLeakFound = false;
-    private bool isGameWon = false;
+    #region Поля
+    [BoxGroup("SETTINGS"), SerializeField]
+    [Tooltip("Сколько всего конфорок нужно проверить?")]
+    private int _totalBurnersToTest = 5;
 
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private int _burnersTested = 0;
+
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private bool _isLeakFound = false;
+
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private bool _isGameWon = false;
+
+    [BoxGroup("DEBUG"), SerializeField] protected bool _ColoredDebug;
+    #endregion
+
+    #region Unity Методы
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (_instance != null && _instance != this)
+            DebugUtils.LogInstanceAlreadyExists(this, _instance);
+        else
+            _instance = this;
+
+        if (_successPanel == null)
+            DebugUtils.LogMissingReference(this, nameof(_successPanel));
     }
 
     private void Start()
     {
-        if (successPanel != null) successPanel.SetActive(false);
+        if (_successPanel != null)
+            _successPanel.SetActive(false);
     }
+    #endregion
 
+    #region Публичные методы
     public void ReportBurnerTested()
     {
-        burnersTested++;
-        Debug.Log($"Проверено конфорок: {burnersTested} / {totalBurnersToTest}");
+        _burnersTested++;
+        ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Проверено конфорок: {0} / {1}", _ColoredDebug, _burnersTested, _totalBurnersToTest);
         CheckWinCondition();
     }
 
     public void ReportLeakFound()
     {
-        if (!isLeakFound)
+        if (!_isLeakFound)
         {
-            isLeakFound = true;
-            Debug.Log("Утечка успешно обнаружена!");
+            _isLeakFound = true;
+            ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Утечка успешно обнаружена!", _ColoredDebug);
             CheckWinCondition();
         }
     }
+    #endregion
 
+    #region Личные методы
     private void CheckWinCondition()
     {
-        if (isGameWon) return; 
+        if (_isGameWon) return;
 
-        if (burnersTested >= totalBurnersToTest && isLeakFound)
+        if (_burnersTested >= _totalBurnersToTest && _isLeakFound)
         {
-            isGameWon = true;
+            _isGameWon = true;
             ShowSuccessMessage();
         }
     }
 
     private void ShowSuccessMessage()
     {
-        Debug.Log("ДИАГНОСТИКА ПРОЙДЕНА УСПЕШНО!");
+        ColoredDebug.CLog(gameObject, "<color=cyan>[INFO]</color> ДИАГНОСТИКА ПРОЙДЕНА УСПЕШНО!", _ColoredDebug);
 
-        if (successPanel != null)
+        if (_successPanel != null)
         {
-            successPanel.SetActive(true);
-
-            // GetComponent<AudioSource>()?.Play();
+            _successPanel.SetActive(true);
         }
     }
+    #endregion
 }

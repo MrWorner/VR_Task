@@ -6589,6 +6589,11 @@ PrefabInstance:
       propertyPath: successPanel
       value: 
       objectReference: {fileID: 1666704501}
+    - target: {fileID: 8480440889285287923, guid: 1bd2ee8f43601194e8fc437deda33766,
+        type: 3}
+      propertyPath: _successPanel
+      value: 
+      objectReference: {fileID: 1666704501}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
