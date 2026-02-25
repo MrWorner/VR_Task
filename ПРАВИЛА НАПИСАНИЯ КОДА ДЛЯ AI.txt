@@ -1,0 +1,235 @@
+================================================================================
+УНИВЕРСАЛЬНЫЕ ПРАВИЛА НАПИСАНИЯ КОДА ДЛЯ AI / Unity3D / C#
+================================================================================
+
+Документ описывает универсальный стиль разработки, подходящий для любых
+Unity-проектов: игр, инструментов, сервисов и редакторских утилит.
+
+Цель:
+- единый стиль для всех твоих проектов;
+- облегчение рефакторинга;
+- предсказуемая работа нейросети (ChatGPT / Cursor / Copilot);
+- минимизация ошибок и "неоднозначного" кода;
+- высокая читаемость и строгий стандарт.
+
+================================================================================
+БАЗОВЫЕ ИМПОРТЫ
+================================================================================
+using NaughtyAttributes;
+using Cysharp.Threading.Tasks;
+
+================================================================================
+СТРУКТУРА КЛАССА
+================================================================================
+
+public class SomeClass : MonoBehaviour
+{
+    // 1. Enums
+    // 2. Events (UnityAction предпочтительно)
+
+    #region Поля: Required
+    // В NaughtyAttributes нет PropertyOrder, порядок определяется местом в коде
+    [BoxGroup("Required"), Required, SerializeField]
+    private GameObject _requiredField;
+    #endregion
+
+    #region Поля
+    [BoxGroup("SETTINGS"), SerializeField] private float _speed;
+    
+    [BoxGroup("DEBUG")]
+    [SerializeField, ReadOnly] private bool _isInitialized;
+    
+    [BoxGroup("DEBUG"), SerializeField] protected bool _ColoredDebug;
+    #endregion
+
+    #region Свойства
+    public float Speed => _speed;
+    #endregion
+
+    #region Unity Методы
+    private void Awake()
+    {
+        // Проверка синглтона
+        if (_instance != null && _instance != this)
+            DebugUtils.LogInstanceAlreadyExists(this, _instance);
+        else
+            _instance = this;
+
+        // Валидация в Runtime (NaughtyAttributes делает это визуально в инспекторе)
+        if (_requiredField == null)
+            DebugUtils.LogMissingReference(this, nameof(_requiredField));
+    }
+    #endregion
+
+    #region Публичные методы
+    #endregion
+
+    #region Личные методы
+    [Button("Test Action")] // Кнопки в инспекторе (аналог Odin)
+    private void DebugAction() => DoSomething();
+    #endregion
+}
+
+================================================================================
+BoxGroup: ОБЩИЕ ПРАВИЛА
+================================================================================
+Три корневые группы:
+
+"Required" — обязательные ссылки и настройки, без которых объект не будет работать.
+"SETTINGS" — параметры, меняющие поведение (скорость, радиус и т.д.).
+"DEBUG" — данные только для чтения, мониторинга или кнопки отладки
+
+[BoxGroup("SETTINGS"), SerializeField] private float _speed;
+[BoxGroup("DEBUG"), SerializeField] private bool _isRunning;
+
+================================================================================
+ЛОГИРОВАНИЕ (ColoredDebug)
+================================================================================
+
+Формат логов:
+ColoredDebug.CLog(gameObject, "<color=cyan>[CATEGORY]</color> Сообщение {0}", _ColoredDebug, value);
+
+Категории (универсальные):
+- <color=cyan>[INFO]</color>
+- <color=lime>[ACTION]</color>
+- <color=orange>[SYSTEM]</color>
+- <color=magenta>[RX]</color>
+- <color=red>[ERROR]</color>
+- <color=grey>[DEBUG]</color>
+
+Примеры:
+ColoredDebug.CLog(gameObject, "<color=cyan>[INFO]</color> Инициализация.", _ColoredDebug);
+ColoredDebug.CLog(gameObject, "<color=lime>[ACTION]</color> Выполнение действия {0}", _ColoredDebug, actionName);
+
+Запрещено:
+❌ Debug.Log  
+❌ Debug.LogWarning  
+✅ Debug.LogError — только критические случаи  
+
+================================================================================
+ЗАПРЕЩЁННЫЕ API
+================================================================================
+❌ FindObjectOfType (замена: FindFirstObjectByType)  
+❌ GetComponent / GetComponentInChildren / GetComponentInParent  
+   → вместо этого: [SerializeField] или DI-подобный подход  
+
+❌ Update() при использовании UniRx  
+❌ async void (кроме UI-событий)  
+
+================================================================================
+АСИНХРОННОСТЬ (UniTask)
+================================================================================
+
+✅ Только async UniTask  
+✅ Всегда использовать CancellationToken через GetCancellationTokenOnDestroy()  
+✅ Любой UniTask → try/catch  
+
+Пример UniTask:
+try
+{
+    await DoWorkAsync(this.GetCancellationTokenOnDestroy());
+}
+catch (Exception e)
+{
+    ColoredDebug.CLog(gameObject, "<color=red>[ERROR]</color> {0}", _ColoredDebug, e.Message);
+}
+
+================================================================================
+КОММЕНТАРИИ
+================================================================================
+
+В начале каждого файла:
+
+// НАЗНАЧЕНИЕ: краткое описание роли класса  
+// ЗАВИСИМОСТИ: критичные компоненты  
+// ПРИМЕЧАНИЕ: важная информация  
+
+API-комментарии:
+/// <summary>…</summary>
+/// <param name="value">…</param>
+/// <returns>…</returns>
+
+Не использовать:
+❌ "НАЧАЛО ФАЙЛА"  
+❌ "КОНЕЦ ФАЙЛА"  
+❌ пути исходников  
+
+================================================================================
+ИМЕНОВАНИЕ
+================================================================================
+
+Приватные поля: _camelCase  
+Публичные свойства: PascalCase  
+Методы: PascalCase + глагол  
+Локальные переменные: camelCase  
+
+Пример:
+private float _moveSpeed;
+public float MoveSpeed => _moveSpeed;
+
+================================================================================
+DOTween: УНИВЕРСАЛЬНЫЙ СТАНДАРТ
+================================================================================
+1) Все анимации через DOTween.Sequence().  
+2) В конце последовательности — только OnComplete().  
+3) AppendInterval вместо WaitForSeconds.  
+
+Шаблон:
+var seq = DOTween.Sequence();
+seq.AppendInterval(_duration);
+seq.OnComplete(() => onComplete?.Invoke());
+
+================================================================================
+УНИВЕРСАЛЬНАЯ СТРУКТУРА "TRY-METHODS"
+================================================================================
+Методы, проверяющие выполнение, должны следовать паттерну:
+
+bool TryDoSomething(out ResultType result)  
+{
+    // 1) Проверки
+    // 2) Вычисления
+    // 3) Логирование
+    // 4) return true/false
+}
+
+Все проверки → return bool.
+
+================================================================================
+МЕЖКЛАССОВЫЕ КОНТРАКТЫ (ОБЩИЕ)
+================================================================================
+Использовать интерфейсы, если класс предоставляет функциональность:
+
+public interface IMovable
+{
+    void Move(Vector3 position);
+    float Speed { get; }
+}
+
+public interface IInitializable
+{
+    void Initialize();
+}
+
+Цель:
+- слабая связанность  
+- меньше ошибок  
+- лучшее понимание кода AI-ассистентом  
+
+================================================================================
+ИЗБЕГАТЬ МАГИЧЕСКИХ ЧИСЕЛ
+================================================================================
+Любые параметры, числа и тайминги:
+
+✅ выносить в SETTINGS  
+✅ давать понятные названия  
+
+[BoxGroup("SETTINGS/Timings"), SerializeField] private float _blinkDuration = 0.25f;
+
+================================================================================
+ПЕЧАТЬ КОДА ДЛЯ AI
+================================================================================ 
+✅ Соблюдать BoxGroup  
+✅ Соблюдать лог-формат  
+================================================================================
+КОНЕЦ УНИВЕРСАЛЬНЫХ ПРАВИЛ
+================================================================================
