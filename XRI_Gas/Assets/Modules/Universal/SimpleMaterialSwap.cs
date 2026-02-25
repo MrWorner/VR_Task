@@ -2,34 +2,36 @@
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class SimpleMaterialSwap : MonoBehaviour
+namespace GasStoveSimulator.Common
 {
-    public Renderer targetRenderer;
-    [Tooltip("Создайте в проекте яркий материал и перетащите сюда")]
-    public Material highlightMaterial;
-
-    private Material originalMaterial;
-    private XRBaseInteractable interactable;
-
-    private void Awake()
+    public class SimpleMaterialSwap : MonoBehaviour
     {
-        interactable = GetComponent<XRBaseInteractable>();
-        if (targetRenderer == null) targetRenderer = GetComponentInChildren<Renderer>();
+        public Renderer targetRenderer;
+        public Material highlightMaterial;
 
-        if (targetRenderer != null)
-            originalMaterial = targetRenderer.sharedMaterial;
-    }
+        private Material _originalMaterial;
+        private XRBaseInteractable _interactable;
 
-    private void OnEnable()
-    {
-        interactable.hoverEntered.AddListener(x => SetHighlight(true));
-        interactable.hoverExited.AddListener(x => SetHighlight(false));
-    }
+        private void Awake()
+        {
+            _interactable = GetComponent<XRBaseInteractable>();
+            if (targetRenderer == null) targetRenderer = GetComponentInChildren<Renderer>();
 
-    private void SetHighlight(bool on)
-    {
-        if (targetRenderer == null) return;
+            if (targetRenderer != null)
+                _originalMaterial = targetRenderer.sharedMaterial;
+        }
 
-        targetRenderer.material = on ? highlightMaterial : originalMaterial;
+        private void OnEnable()
+        {
+            _interactable.hoverEntered.AddListener(x => SetHighlight(true));
+            _interactable.hoverExited.AddListener(x => SetHighlight(false));
+        }
+
+        private void SetHighlight(bool on)
+        {
+            if (targetRenderer == null) return;
+
+            targetRenderer.material = on ? highlightMaterial : _originalMaterial;
+        }
     }
 }
