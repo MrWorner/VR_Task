@@ -59,6 +59,7 @@ namespace GasStoveSimulator.Modules.GasDetector
             if (_mainController == null) return;
 
             bool detectGas = false;
+            bool isTrueLeak = false;
 
             for (int i = _activeZones.Count - 1; i >= 0; i--)
             {
@@ -73,6 +74,7 @@ namespace GasStoveSimulator.Modules.GasDetector
                 if (zone.CompareTag(_gasLeakZoneTag))
                 {
                     detectGas = true;
+                    isTrueLeak = true; 
                     break;
                 }
                 else if (zone.CompareTag(_burnerZoneTag))
@@ -88,7 +90,7 @@ namespace GasStoveSimulator.Modules.GasDetector
                 }
             }
 
-            _mainController.SetGasDetected(detectGas);
+            _mainController.SetGasDetected(detectGas, isTrueLeak);
         }
         #endregion
     }

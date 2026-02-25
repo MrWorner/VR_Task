@@ -88,18 +88,19 @@ namespace GasStoveSimulator.Modules.GasDetector
         #endregion
 
         #region Публичные методы
-        public void SetGasDetected(bool hasGas)
+        public void SetGasDetected(bool hasGas, bool isTrueLeak = false)
         {
+            if (hasGas && isTrueLeak)
+            {
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.ReportLeakFound();
+                }
+            }
+
             if (_isNearGas == hasGas) return;
 
             _isNearGas = hasGas;
-            ColoredDebug.CLog(gameObject, "<color=orange>[SYSTEM]</color> Статус газа изменен. Обнаружен газ: {0}", _ColoredDebug, _isNearGas);
-
-            if (_isNearGas && GameManager.Instance != null)
-            {
-                GameManager.Instance.ReportLeakFound();
-            }
-
             UpdateScreen();
         }
         #endregion
